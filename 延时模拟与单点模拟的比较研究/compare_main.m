@@ -39,7 +39,11 @@ output_net_filename=['C:\Users\hc042\Desktop\计算结果','\111',];
 inpfile_lowest = [lib_directory,'运算案例','\anytown6-lowest.inp'];
 inpfile_highest = [lib_directory,'运算案例','\anytown6-highest.inp'];
 if isdir(output_net_filename)
+    try
     rmdir(output_net_filename,'s')
+    catch
+        keyboard
+    end
 end
 mkdir(output_net_filename);
 %=========================================
@@ -53,7 +57,7 @@ circulation_num=40;%PDD循环次数
 RepairCrew={'a'};
 %=========================================
 % Monte Carlo
-MC_MAX = 5;
+MC_MAX = 1;
 %=========================================
 % ND_Execut_probabilistic3输入参数
 fid=fopen(input_RR_filename,'r');
@@ -118,7 +122,7 @@ for MC_i = 1:5
     MC_simulate_result_dir=[output_net_filename,'\MC模拟第',num2str(MC_i)];
     mkdir(MC_simulate_result_dir)%第i次输出文件夹
     %[t_e,damage_pipe_info]=ND_Execut_probabilistic3(net_data,RR_data,leak_probability_data,pipe_break_rate,pipe_damage_num_max,C,mu,par_data);%调用ND_Execut子程序生成破坏信息
-    damagefile = ['damage0',num2str(i),'.txt'];%利用固定的破坏信息，以便重复试验。
+    damagefile = ['damage0',num2str(MC_i),'.txt'];%利用固定的破坏信息，以便重复试验。
     [t_e,damage_pipe_info]=ND_Execut_deterministic(net_data,damagefile);
 % [t_e,damage_pipe_info]=ND_Execut_deterministic(net_data,'damage.txt');
 disp(['MC模拟次数',num2str(MC_i)])
@@ -151,7 +155,7 @@ disp(['MC模拟次数',num2str(MC_i)])
         end
         %%
         BreakPipe_order=num2cell(damage_pipe_info{1});
-        [ Dp_Inspect_mat,Dp_Repair_mat ,Dp_Travel_mat1] = event_time( damage_pipe_info,net_data);
+        [ Dp_Inspect_mat,Dp_Repair_mat ,Dp_Travel_mat1] = event_time2( damage_pipe_info,net_data);
         %         Dp_Travel_mat=Dp_Travel_mat1/1000;
         Dp_Travel_mat=Dp_Travel_mat1*0;% 不考虑修复队伍移动时间的影响。
         % 随机次序延时模拟
@@ -288,6 +292,7 @@ mid2={'EPS','最高点单点模拟','最低点单点模拟','模拟步长'};
 mid3 = [mid2;mid];
 mid4 = [mid1,mid3];
 xlswrite([output_net_filename,'\韧性值.xls'],mid4)
+mid4
 % 性能曲线
 %  random_system_serviceability_cell_EPS
 %  random_system_serviceability_cell_highest

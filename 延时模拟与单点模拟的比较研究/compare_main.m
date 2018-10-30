@@ -117,7 +117,9 @@ system_original_L_lowest=sum(cell2mat(net_data_lowest{5,2}(:,4)));%¹ÜµÀÔËĞĞ×Ü³¤¶
 for MC_i = 1:5
     MC_simulate_result_dir=[output_net_filename,'\MCÄ£ÄâµÚ',num2str(MC_i)];
     mkdir(MC_simulate_result_dir)%µÚi´ÎÊä³öÎÄ¼ş¼Ğ
-    [t_e,damage_pipe_info]=ND_Execut_probabilistic3(net_data,RR_data,leak_probability_data,pipe_break_rate,pipe_damage_num_max,C,mu,par_data);%µ÷ÓÃND_Execut×Ó³ÌĞòÉú³ÉÆÆ»µĞÅÏ¢
+    %[t_e,damage_pipe_info]=ND_Execut_probabilistic3(net_data,RR_data,leak_probability_data,pipe_break_rate,pipe_damage_num_max,C,mu,par_data);%µ÷ÓÃND_Execut×Ó³ÌĞòÉú³ÉÆÆ»µĞÅÏ¢
+    damagefile = ['damage0',num2str(i),'.txt'];%ÀûÓÃ¹Ì¶¨µÄÆÆ»µĞÅÏ¢£¬ÒÔ±ãÖØ¸´ÊÔÑé¡£
+    [t_e,damage_pipe_info]=ND_Execut_deterministic(net_data,damagefile);
 % [t_e,damage_pipe_info]=ND_Execut_deterministic(net_data,'damage.txt');
 disp(['MCÄ£Äâ´ÎÊı',num2str(MC_i)])
     t_w = write_Damagefile(damage_pipe_info,[MC_simulate_result_dir,'\damage.txt']);
@@ -177,7 +179,8 @@ disp(['MCÄ£Äâ´ÎÊı',num2str(MC_i)])
         %             circulation_num,doa,Hmin,Hdes,...PDDµü´ú´ÎÊı£¬¾«¶È£¬×îĞ¡Ë®Ñ¹£¬ĞèÒªË®Ñ¹
         %             Dp_Inspect_mat,Dp_Repair_mat,Dp_Travel_mat,...¼ì²éÊ±¼ä£¬ĞŞ¸´Ê±¼ä£¬ÒÆ¶¯Ê±¼ä
         %             output_net_filename_inp,pipe_relative);
-        [pop]=pipeDamage2priorityList(BreakPipe_order);%²úÉúËæ»ú´ÎĞò
+%         [pop]=pipeDamage2priorityList(BreakPipe_order);%²úÉúËæ»ú´ÎĞò
+        pop=BreakPipe_order;%²ÉÓÃ¹Ì¶¨µÄĞŞ¸´´ÎĞò
         pop_cell{MC_i} = pop;
         [random_Fitness_EPS,BreakPipe_result,RepairCrew_result,random_F_EPS,random_system_L_EPS,random_system_serviceability_EPS,random_node_serviceability_EPS,random_node2_serviceability_EPS,random_node_calculate_dem_EPS,random_node_calculate_pre_EPS,random_timeStep_end_EPS,timeStep_EPS,activity_cell]...
             =fit4...
